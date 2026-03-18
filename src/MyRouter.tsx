@@ -1,26 +1,25 @@
-import { Routes, Route, Link } from 'react-router'
+import { Routes, Route } from 'react-router'
 import App from './App'
-import Contact from './components/Contact'
-import NavBar from './components/NavBar'
-import Users from './components/Users'
-import User from './components/User'
-
-
+import Navbar from './components/Navbar'
+import CategoriesPage from './components/CategoriesPage'
+import RecipesPage from './components/RecipesPage'
+import AreasPage from './components/AreasPage'
+import AreaDetailPage from './components/AreaDetailPage'
+import CategoryDetailPage from './components/CategoryDetailPage'
+import RecipeDetailPage from './components/RecipeDetailPage'
 
 const MyRouter = () => {
     return (
         <>
-            <NavBar />
-            {/* <ul style={{display:"flex", justifyContent: 'space-between'}}>
-                <li><Link to='/' >Home</Link></li>
-                <li><Link to='/contact' >Contact</Link></li>
-                <li><Link to='/users' >Users</Link></li>
-            </ul> */}
+            <Navbar />
             <Routes>
                 <Route path='/' element={<App />} />
-                <Route path='/contact' element={<Contact />} />
-                <Route path='/users' element={<Users />} />
-                <Route path='/user/:id' element={<User />} />
+                <Route path='/categories' element={<CategoriesPage />} />
+                <Route path='/recipes' element={<RecipesPage />} />
+                <Route path='/areas' element={<AreasPage />} />
+                <Route path='/area/:area_id' element={<AreaDetailPage />} />
+                <Route path='/category/:category_id' element={<CategoryDetailPage />} />
+                <Route path='/recipe/:recipe_id' element={<RecipeDetailPage />} />
                 <Route path='*' element={<h1>Page not found</h1>} />
             </Routes>
 
