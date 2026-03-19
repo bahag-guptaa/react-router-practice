@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { Link } from "react-router"
+import { MealsContext } from "../context/MealsContext"
 
 interface RecipeData {
     idMeal: string
@@ -12,6 +13,7 @@ interface RecipeData {
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
 const RecipesPage: React.FC = () => {
+    const { fetchMeals } = useContext(MealsContext)
     const [recipes, setRecipes] = useState<RecipeData[]>([])
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
@@ -20,15 +22,12 @@ const RecipesPage: React.FC = () => {
     const handleLetterClick = async (letter: string) => {
         setSelectedLetter(letter)
         setError(null)
+        setRecipes([])
         setLoading(true)
 
         try {
-            const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`)
-            const data: { meals: RecipeData[] | null } = await response.json()
-
-            if (data.meals !== null) {
-                setRecipes(data.meals)
-            }
+            const result = await fetchMeals(`https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`)
+            setRecipes(result as RecipeData[])
         } catch (err) {
             console.error('Error fetching recipes:', err)
             setError('Failed to load recipes')

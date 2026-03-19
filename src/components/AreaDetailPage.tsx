@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { useParams, Link } from "react-router"
+import { MealsContext } from "../context/MealsContext"
 
 interface MealData {
     idMeal: string
@@ -9,25 +10,23 @@ interface MealData {
 
 const AreaDetailPage: React.FC = () => {
     const { area_id } = useParams()
+    const { fetchMeals } = useContext(MealsContext)
     const [meals, setMeals] = useState<MealData[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
-    const fetchMealsByArea = async () => {
-        try {
-            const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area_id}`)
-            const data: { meals: MealData[] } = await response.json()
-            setMeals(data.meals)
-        } catch (error) {
-            console.error('Error fetching meals by area:', error)
-            setError('Failed to load meals')
-        } finally {
-            setLoading(false)
-        }
-    }
-
     useEffect(() => {
-        fetchMealsByArea()
+        const loadMeals = async () => {
+            try {
+                const result = await fetchMeals(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area_id}`)
+                setMeals(result)
+            } catch (err) {
+                setError('Failed to load meals')
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadMeals()
     }, [area_id])
 
     return (

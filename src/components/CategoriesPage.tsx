@@ -1,33 +1,23 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { Link } from "react-router"
-
-interface CategoryData {
-    idCategory: string,
-    strCategory: string,
-    strCategoryThumb: string,
-    strCategoryDescription: string
-}
+import { CategoriesContext } from "../context/CategoriesContext"
 
 const CategoriesPage: React.FC = () => {
-    const [categories, setCategories] = useState<CategoryData[]>([])
+    const { categories, fetchCategories } = useContext(CategoriesContext)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
-            const data: { categories: CategoryData[] } = await response.json()
-            setCategories(data.categories)
-        } catch (error) {
-            console.error('Error fetching categories:', error)
-            setError('Failed to load categories')
-        } finally {
-            setLoading(false)
-        }
-    }
-
     useEffect(() => {
-        fetchCategories()
+        const loadCategories = async () => {
+            try {
+                await fetchCategories()
+            } catch (err) {
+                setError('Failed to load categories')
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadCategories()
     }, [])
     
     return (
