@@ -1,23 +1,30 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router"
-import { AreasContext } from "../context/AreasContext"
+
+interface AreaData {
+    strArea: string
+}
 
 const AreasPage: React.FC = () => {
-    const { areas, fetchAreas } = useContext(AreasContext)
+    const [areas, setAreas] = useState<AreaData[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
-        const loadAreas = async () => {
-            try {
-                await fetchAreas()
-            } catch (err) {
-                setError('Failed to load areas')
-            } finally {
-                setLoading(false)
-            }
+    const fetchAreas = async () => {
+        try {
+            const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
+            const data: { meals: AreaData[] } = await response.json()
+            setAreas(data.meals)
+        } catch (error) {
+            console.error('Error fetching areas:', error)
+            setError('Failed to load areas')
+        } finally {
+            setLoading(false)
         }
-        loadAreas()
+    }
+
+    useEffect(() => {
+        fetchAreas()
     }, [])
 
     return (
